@@ -5,15 +5,14 @@ on:
     branches: [ "main" ]
 
 env:
-  PROJECT_ID: inbound-pattern-422518-k7 
-  APP_NAME: group-project-registry-service 
-  SER_NAME: group-project-registry-service 
-  REGION: europe-west1 
-  SER_PORT: 8085 
+  PROJECT_ID: inbound-pattern-422518-k7 # TODO: update Google Cloud project id
+  APP_NAME: group-project-registry-service # TODO: update Artifact Registry location
+  SER_NAME: group-project-registry-service # TODO: update Artifact Registry location
+  REGION: europe-west1 # TODO: update Cloud Run service region
+  SER_PORT: 8085 # TODO: update Cloud Run service region
 
 jobs:
   deploy:
-
     permissions:
       contents: 'read'
       id-token: 'write'
@@ -31,12 +30,10 @@ jobs:
           gcloud auth activate-service-account individual-account@inbound-pattern-422518-k7.iam.gserviceaccount.com --key-file client-secret.json
           gcloud config set project ${{env.PROJECT_ID}}
           gcloud auth configure-docker europe-west1-docker.pkg.dev
-          
-          cd registry-service
+          export DOCKER_BUILDKIT=0
+          cd service-registry
           docker build -t $IMAGE_NAME .
           docker push $IMAGE_NAME
           gcloud run deploy ${{env.SER_NAME}} --image $IMAGE_NAME --port ${{env.SER_PORT}} --region ${{env.REGION}} --cpu=1 --memory=1Gi --timeout=3000 --allow-unauthenticated || true
         env:
           KEY_FILE: ${{ secrets.KEY_FILE }}
-
-          # export DOCKER_BUILDKIT=0
