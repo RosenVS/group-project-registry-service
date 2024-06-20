@@ -31,10 +31,12 @@ jobs:
           gcloud auth activate-service-account individual-account@inbound-pattern-422518-k7.iam.gserviceaccount.com --key-file client-secret.json
           gcloud config set project ${{env.PROJECT_ID}}
           gcloud auth configure-docker europe-west1-docker.pkg.dev
-          export DOCKER_BUILDKIT=0
+          
           cd registry-service
           docker build -t $IMAGE_NAME .
           docker push $IMAGE_NAME
           gcloud run deploy ${{env.SER_NAME}} --image $IMAGE_NAME --port ${{env.SER_PORT}} --region ${{env.REGION}} --cpu=1 --memory=1Gi --timeout=3000 --allow-unauthenticated || true
         env:
           KEY_FILE: ${{ secrets.KEY_FILE }}
+
+          # export DOCKER_BUILDKIT=0
