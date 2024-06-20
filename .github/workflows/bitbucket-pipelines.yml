@@ -31,7 +31,7 @@ jobs:
           gcloud config set project ${{env.PROJECT_ID}}
           gcloud auth configure-docker europe-west1-docker.pkg.dev
           export DOCKER_BUILDKIT=0
-          cd service-registry
+          cd registry-service
           docker build -t $IMAGE_NAME .
           docker push $IMAGE_NAME
           gcloud run deploy ${{env.SER_NAME}} --image $IMAGE_NAME --port ${{env.SER_PORT}} --region ${{env.REGION}} --cpu=1 --memory=1Gi --timeout=3000 --allow-unauthenticated || true
